@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 2705206081670889515}
   - component: {fileID: 1579146367911824458}
   - component: {fileID: 7881196418339446049}
+  - component: {fileID: -5228691538624328199}
   - component: {fileID: -1165445018775067075}
+  - component: {fileID: 4592461996842024884}
   m_Layer: 0
   m_Name: Knight
   m_TagString: Untagged
@@ -99,10 +101,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   standingOnTile: {fileID: 0}
+  health: {fileID: 4592461996842024884}
+  speed: 20
   movementSpeed: 2
   jumpHeight: 1
   movementPoints: 3
-  upState: {fileID: 151043869, guid: f342ec9cf79394a4894187c747cdc80f, type: 3}
+--- !u!114 &-5228691538624328199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4216264646535166078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdcd6cc8838c448b09e942d2dd9c0c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: -1165445018775067075}
 --- !u!95 &-1165445018775067075
 Animator:
   serializedVersion: 5
@@ -123,3 +139,17 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &4592461996842024884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4216264646535166078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1757334038e174b6a96d92faec0c5aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0

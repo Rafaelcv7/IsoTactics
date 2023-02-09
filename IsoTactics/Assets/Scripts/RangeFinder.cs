@@ -15,8 +15,7 @@ namespace IsoTactics
             inRangeTiles.Add(startingTile);
 
             //Should contain the surroundingTiles of the previous step. 
-            var tilesForPreviousStep = new List<OverlayTile>();
-            tilesForPreviousStep.Add(startingTile);
+            var tilesForPreviousStep = new List<OverlayTile> { startingTile };
             while (stepCount < characterMovementPoints)
             {
                 var surroundingTiles = new List<OverlayTile>();

@@ -67,28 +67,28 @@ namespace IsoTactics
             var surroundingTiles = new List<OverlayTile>();
 
             var tileToCheck = new Vector2Int(originTile.x + 1, originTile.y);
-            if (Map.ContainsKey(tileToCheck))
+            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
             {
                 if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= characterJumpHeight)
                     surroundingTiles.Add(Map[tileToCheck]);
             }
 
             tileToCheck = new Vector2Int(originTile.x - 1, originTile.y);
-            if (Map.ContainsKey(tileToCheck))
+            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
             {
                 if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= characterJumpHeight)
                     surroundingTiles.Add(Map[tileToCheck]);
             }
 
             tileToCheck = new Vector2Int(originTile.x, originTile.y + 1);
-            if (Map.ContainsKey(tileToCheck))
+            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
             {
                 if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= characterJumpHeight)
                     surroundingTiles.Add(Map[tileToCheck]);
             }
 
             tileToCheck = new Vector2Int(originTile.x, originTile.y - 1);
-            if (Map.ContainsKey(tileToCheck))
+            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
             {
                 if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= characterJumpHeight)
                     surroundingTiles.Add(Map[tileToCheck]);
