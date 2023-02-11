@@ -7,66 +7,75 @@ namespace IsoTactics
 {
     public class TurnManager : MonoBehaviour
     {
-        public List<GameObject> charactersPrefabs;
         public List<CharacterInfo> charactersContainer; 
         public int currentTurn;
-        public MouseController controller;
-        private CharacterInfo currentC;
-        public bool onPosPhase;
+        
+        private CharacterInfo _activeCharacter;
         private int _characterNum;
 
+        [Header("Events")] public GameEvents onNewActiveCharacter;
         private void Start()
         {
-            onPosPhase = true;
             currentTurn = 0;
             charactersContainer = new List<CharacterInfo>();
-            _characterNum = charactersPrefabs.Count;
-            PositioningPhase();
+            EvaluatePhase();
         }
-        
+
+        private void EvaluatePhase()
+        {
+            switch (GamePhases.CurrentPhase)
+            {
+                case "Positioning":
+                {
+                    Invoke(nameof(PositioningPhase), 0);
+                    break; 
+                }
+                case "Turn":
+                {
+                    Invoke(nameof(TurnPhase), 2f); 
+                    break;
+                }
+            }
+        }
+
 
         private void PositioningPhase()
         {
-            var current = charactersPrefabs[0];
-            
-
-            controller.characterPrefab = current;
             
         }
 
         private void TurnPhase()
         {
-            controller.characterPrefab = null;
+            _characterNum = charactersContainer.Count;
+            _activeCharacter = charactersContainer[currentTurn];
+            _activeCharacter.RestartStats();
             
-            controller.StartTurn(charactersContainer[currentTurn]);
+            onNewActiveCharacter.Raise(this, _activeCharacter);
         }
 
-        public void PassTurn()
+        //Called by MovementController.
+        public void PassTurn(Component sender, object data)
         {
             currentTurn = (currentTurn + 1) % _characterNum;
-            if (onPosPhase) {charactersPrefabs.RemoveAt(0);}
-            if (charactersPrefabs.Count != 0)
+            EvaluatePhase();
+        }
+
+        //Called by Spawner.
+        public void ChangePhase(Component sender, object data)
+        {
+            if (data is string phase)
             {
-                Invoke(nameof(PositioningPhase), 0);
-            }
-            else
-            {
-                onPosPhase = false;
-                Invoke(nameof(TurnPhase), 2f);  
+                GamePhases.ChangeCurrentPhase(phase);  
+                EvaluatePhase();
             }
         }
 
-        private void TakeTurn()
+        //Called by Spawner.
+        public void AddNewCharacter(Component sender, object data)
         {
-            GameObject current = charactersPrefabs[currentTurn];
-
-            controller.characterPrefab = current;
-
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (data is CharacterInfo newCharacter)
             {
-                currentC.RestartStats(); 
-                currentTurn = (currentTurn + 1) % _characterNum;
-                Invoke(nameof(TakeTurn), 2f);  
+                charactersContainer.Add(newCharacter);
             }
         }
     }

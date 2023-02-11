@@ -10,7 +10,7 @@ namespace IsoTactics
         public int G;
         public int H;
         public int F => G + H;
-
+        public CharacterInfo activeCharacter;
         public bool isBlocked = false;
 
         [FormerlySerializedAs("Previous")] public OverlayTile previousTile;
