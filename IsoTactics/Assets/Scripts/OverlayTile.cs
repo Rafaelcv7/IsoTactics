@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using IsoTactics.TileConfig;
 using UnityEngine;
 using UnityEngine.Serialization;
 using static IsoTactics.ArrowTranslator;
@@ -10,12 +11,13 @@ namespace IsoTactics
         public int G;
         public int H;
         public int F => G + H;
-        public CharacterInfo activeCharacter;
+        public BaseCharacter activeCharacter;
         public bool isBlocked = false;
 
-        [FormerlySerializedAs("Previous")] public OverlayTile previousTile;
+        public OverlayTile previousTile;
         public Vector3Int gridLocation;
         public Vector2Int Grid2DLocation => new Vector2Int(gridLocation.x, gridLocation.y);
+        public TileData tileData;
 
         public List<Sprite> arrows;
 

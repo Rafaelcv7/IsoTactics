@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using IsoTactics;
 using UnityEngine;
-using CharacterInfo = IsoTactics.CharacterInfo;
 
 public class Spawner : MonoBehaviour
 {
-    public List<CharacterInfo> charactersPrefabs;
+    public List<Character> charactersPrefabs;
     
     [Header("Events")]
     public GameEvents onCharacterSpawn;
@@ -27,25 +26,30 @@ public class Spawner : MonoBehaviour
             
             if (Input.GetMouseButtonDown(0))
             {
-                var newCharacter = Instantiate(charactersPrefabs[0]).GetComponent<CharacterInfo>();
-                charactersPrefabs.RemoveAt(0);
-                SpawnCharacter(newCharacter, _focusedTile);
-                
-                if (charactersPrefabs.Count == 0)
+                if (!_focusedTile.isBlocked)
                 {
-                    SetCursorSilhouette.Raise(this, null);
-                    if(ChangePhase)
-                        ChangePhase.Raise(this, "Turn");
-                }
+                    var newCharacter = Instantiate(charactersPrefabs[0]).GetComponent<Character>();
+                    charactersPrefabs.RemoveAt(0);
+                
+                    SpawnCharacter(newCharacter, _focusedTile);
+                
+                    if (charactersPrefabs.Count == 0)
+                    {
+                        SetCursorSilhouette.Raise(this, null);
+                        if(ChangePhase)
+                            ChangePhase.Raise(this, "Turn");
+                    }
             
-                if(onCharacterSpawn)
-                    onCharacterSpawn.Raise(this, newCharacter);
+                    if(onCharacterSpawn)
+                        onCharacterSpawn.Raise(this, newCharacter);
+                }
+                
             }
         }
         
     }
 
-    private void SpawnCharacter(CharacterInfo newCharacter, OverlayTile tile)
+    private void SpawnCharacter(Character newCharacter, OverlayTile tile)
     {
         newCharacter.transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
         newCharacter.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;

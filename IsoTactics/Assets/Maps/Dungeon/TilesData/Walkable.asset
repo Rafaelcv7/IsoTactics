@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfd162eda5ae478cb09de9f8f7564494, type: 3}
+  m_Name: Walkable
+  m_EditorClassIdentifier: 
+  tilesTextures:
+  - {fileID: 11400000, guid: d7cf1103859b849a3a4588efc4fe3270, type: 2}
+  - {fileID: 11400000, guid: 26db0664cb72d4f56bcfed92acc50f1f, type: 2}
+  - {fileID: 11400000, guid: bb3d337d411f34ef6b57cb87e620b4e7, type: 2}
+  - {fileID: 11400000, guid: 6be44895306374f388f7e21db6c4b9cd, type: 2}
+  - {fileID: 11400000, guid: 3559f23e4044c45bab77bdd56c0475b7, type: 2}
+  type: 0

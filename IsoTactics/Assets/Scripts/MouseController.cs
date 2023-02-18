@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 
 namespace IsoTactics
@@ -20,9 +22,10 @@ namespace IsoTactics
         void Update()
         {
             var hit = GetFocusedOnTile();
-
+            
             if (hit.HasValue)
             {
+                cursor.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
                 _tile = hit.Value.collider.gameObject.GetComponent<OverlayTile>();
                 cursor.transform.position = _tile.transform.position;
                 cursor.gameObject.GetComponentsInChildren<SpriteRenderer>()[0].sortingOrder =
@@ -31,6 +34,11 @@ namespace IsoTactics
 
                 if (onNewFocusedTile)
                     onNewFocusedTile.Raise(this, _tile);
+            }
+            else
+            {
+                cursor.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+                onNewFocusedTile.Raise(this, null);
             }
         }
 

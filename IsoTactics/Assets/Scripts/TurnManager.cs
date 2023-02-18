@@ -1,23 +1,21 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace IsoTactics
 {
     public class TurnManager : MonoBehaviour
     {
-        public List<CharacterInfo> charactersContainer; 
+        public List<Character> charactersContainer; 
         public int currentTurn;
         
-        private CharacterInfo _activeCharacter;
+        private Character _activeCharacter;
         private int _characterNum;
 
         [Header("Events")] public GameEvents onNewActiveCharacter;
         private void Start()
         {
             currentTurn = 0;
-            charactersContainer = new List<CharacterInfo>();
+            charactersContainer = new List<Character>();
             EvaluatePhase();
         }
 
@@ -73,9 +71,20 @@ namespace IsoTactics
         //Called by Spawner.
         public void AddNewCharacter(Component sender, object data)
         {
-            if (data is CharacterInfo newCharacter)
+            if (data is Character newCharacter)
             {
                 charactersContainer.Add(newCharacter);
+            }
+        }
+        
+        //Called By Character -> Health.
+        public void KillCharacter(Component sender, object data)
+        {
+            if (data is Character deathCharacter)
+            {
+                charactersContainer.Remove(deathCharacter);
+                _characterNum = charactersContainer.Count;
+                currentTurn = (currentTurn + 1) % _characterNum;
             }
         }
     }
