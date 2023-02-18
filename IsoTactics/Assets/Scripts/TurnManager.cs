@@ -1,27 +1,91 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace IsoTactics
 {
     public class TurnManager : MonoBehaviour
     {
-        public GameObject[] combatantObjects;
-        private int _currentCombatant;
+        public List<Character> charactersContainer; 
+        public int currentTurn;
+        
+        private Character _activeCharacter;
+        private int _characterNum;
 
+        [Header("Events")] public GameEvents onNewActiveCharacter;
         private void Start()
         {
-            _currentCombatant = 0;
-            TakeTurn();
+            currentTurn = 0;
+            charactersContainer = new List<Character>();
+            EvaluatePhase();
         }
 
-        private void TakeTurn()
+        private void EvaluatePhase()
         {
-            GameObject current = combatantObjects[_currentCombatant];
-            
-            //Add Logic to Perform Turn Actions for the currentCombatant
+            switch (GamePhases.CurrentPhase)
+            {
+                case "Positioning":
+                {
+                    Invoke(nameof(PositioningPhase), 0);
+                    break; 
+                }
+                case "Turn":
+                {
+                    Invoke(nameof(TurnPhase), 2f); 
+                    break;
+                }
+            }
+        }
 
-            _currentCombatant = (_currentCombatant + 1) % combatantObjects.Length;
-            Invoke("TakeTurn", 2f);
+
+        private void PositioningPhase()
+        {
+            
+        }
+
+        private void TurnPhase()
+        {
+            _characterNum = charactersContainer.Count;
+            _activeCharacter = charactersContainer[currentTurn];
+            _activeCharacter.RestartStats();
+            
+            onNewActiveCharacter.Raise(this, _activeCharacter);
+        }
+
+        //Called by MovementController.
+        public void PassTurn(Component sender, object data)
+        {
+            currentTurn = (currentTurn + 1) % _characterNum;
+            EvaluatePhase();
+        }
+
+        //Called by Spawner.
+        public void ChangePhase(Component sender, object data)
+        {
+            if (data is string phase)
+            {
+                GamePhases.ChangeCurrentPhase(phase);  
+                EvaluatePhase();
+            }
+        }
+
+        //Called by Spawner.
+        public void AddNewCharacter(Component sender, object data)
+        {
+            if (data is Character newCharacter)
+            {
+                charactersContainer.Add(newCharacter);
+            }
+        }
+        
+        //Called By Character -> Health.
+        public void KillCharacter(Component sender, object data)
+        {
+            if (data is Character deathCharacter)
+            {
+                charactersContainer.Remove(deathCharacter);
+                _characterNum = charactersContainer.Count;
+                currentTurn = (currentTurn + 1) % _characterNum;
+            }
         }
     }
 }
