@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace IsoTactics.Abilities
 {
@@ -7,7 +8,8 @@ namespace IsoTactics.Abilities
     {
         public override void Execute(OverlayTile tile)
         {
-            tile.activeCharacter.HP.TakeDamage(10);
+            var damage = character.Stats.strength.statValue;
+            tile.activeCharacter.HP.TakeDamage(damage, character.Stats.accuracy.statValue);
         }
     }
 }

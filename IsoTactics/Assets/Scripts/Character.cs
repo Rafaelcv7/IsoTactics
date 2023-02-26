@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using IsoTactics.Abilities;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace IsoTactics
 {
@@ -14,9 +13,33 @@ namespace IsoTactics
         [Header("Abilities:")]
         public List<Ability> abilities;
 
-        public void RestartStats()
+        private void Start()
         {
-            movementPoints = 4;
+            if (characterClass) { SetStats(); }
+            else 
+            {
+                throw new Exception(
+                    "Character does not have a class assigned. Please assign a class to this character.");
+            }
+
+            List<Ability> abilitiesPouch = new ();
+            abilities.ForEach(x =>
+                {
+                    if (x)
+                    {
+                        x = Instantiate(x);
+                        x.character = this;
+                        abilitiesPouch.Add(x);
+                    }
+                }
+            );
+            abilities = abilitiesPouch;
+        }
+
+        public void RestartPTStats()
+        {
+            Stats.actionPoints.statValue = Stats.actionPoints.baseStat;
+            Stats.movementPoints.statValue = Stats.movementPoints.baseStat;
         }
     }
 }

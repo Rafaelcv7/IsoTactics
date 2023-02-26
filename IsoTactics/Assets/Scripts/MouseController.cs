@@ -9,10 +9,11 @@ namespace IsoTactics
     public class MouseController : MonoBehaviour
     {
         public GameObject cursor;
-        private OverlayTile _tile;
-        
         [Header("Events:")]
         public GameEvents onNewFocusedTile;
+        
+        private OverlayTile _tile;
+        private bool _isCharacterMoving;
         
         private void Start()
         {
@@ -21,6 +22,8 @@ namespace IsoTactics
 
         void Update()
         {
+            if(_isCharacterMoving) return;
+            
             var hit = GetFocusedOnTile();
             
             if (hit.HasValue)
@@ -68,6 +71,15 @@ namespace IsoTactics
             else
             {
                 cursor.GetComponentsInChildren<SpriteRenderer>()[1].sprite = null;
+            }
+        }
+        
+        //Called by MovementController.
+        public void StopCursor(Component sender, object data)
+        {
+            if (data is bool flag)
+            {
+                _isCharacterMoving = flag;
             }
         }
     }

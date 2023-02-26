@@ -15,19 +15,29 @@ namespace IsoTactics
         public StateManager State => gameObject.GetComponent<StateManager>();
 
         [Header("Stats:")]
-        public int movementPoints;
+        public CharacterClass characterClass;
         public Health HP;
         public MagicPoints MP;
-        public int strength;
-        public int speed = 3;
-        public int wisdom;
-        public int vitality;
+        public CharacterStats Stats;
 
+
+        protected void SetStats()
+        {
+            Stats.strength = new Stat(Enums.Stats.Strength, characterClass.strength, this);
+            Stats.vitality = new Stat(Enums.Stats.Vitality, characterClass.vitality, this);
+            Stats.accuracy = new Stat(Enums.Stats.Accuracy, characterClass.accuracy, this);
+            Stats.agility = new Stat(Enums.Stats.Agility, characterClass.agility, this);
+            Stats.intelligence = new Stat(Enums.Stats.Intelligence, characterClass.intelligence, this);
+            Stats.wisdom = new Stat(Enums.Stats.Wisdom, characterClass.wisdom, this);
+            Stats.resistance = new Stat(Enums.Stats.Resistance, characterClass.resistance, this);
+            Stats.actionPoints = new Stat(Enums.Stats.ActionPoints, characterClass.actionPoints, this);
+            Stats.movementPoints = new Stat(Enums.Stats.MovementPoints, characterClass.movementPoints, this);
+        }
 
         public void LinkCharacterToTile(OverlayTile tile)
         {
             UnlinkCharacterToTile();
-            tile.activeCharacter = this;
+            tile.activeCharacter = this as Character;
             tile.isBlocked = true;
             activeTile = tile;
         }

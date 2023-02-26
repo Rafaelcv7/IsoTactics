@@ -11,12 +11,12 @@ namespace IsoTactics
         public int G;
         public int H;
         public int F => G + H;
-        public BaseCharacter activeCharacter;
+        public Character activeCharacter;
         public bool isBlocked = false;
 
         public OverlayTile previousTile;
         public Vector3Int gridLocation;
-        public Vector2Int Grid2DLocation => new Vector2Int(gridLocation.x, gridLocation.y);
+        public Vector2Int Grid2DLocation => new(gridLocation.x, gridLocation.y);
         public TileData tileData;
 
         public List<Sprite> arrows;

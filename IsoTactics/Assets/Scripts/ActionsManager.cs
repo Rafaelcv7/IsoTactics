@@ -19,7 +19,7 @@ namespace IsoTactics
 
         private void Update()
         {
-            if (_onAbilityAction && _tile)
+            if (_onAbilityAction && _tile && activeCharacter.Stats.actionPoints.statValue > 0)
             {
                 _inAttackRangeTiles = _ability.GetAbilityRange(activeCharacter);
                 ShowRange();
@@ -31,12 +31,14 @@ namespace IsoTactics
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_tile.activeCharacter)
+                    if (_tile.activeCharacter && _inAttackRangeTiles.Contains(_tile))
                     {
+                        activeCharacter.State.EvaluateMovingState(_tile, false);
                         _ability.Execute(_tile);
                         _onAbilityAction = false;
                         HideRange();
                         if(toggleMovement){toggleMovement.Raise(this, null);}
+                        activeCharacter.Stats.actionPoints.statValue--;
                     }
                 }
             }

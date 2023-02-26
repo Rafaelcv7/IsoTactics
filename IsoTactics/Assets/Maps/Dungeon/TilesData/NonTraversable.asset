@@ -14,4 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilesTextures:
   - {fileID: 11400000, guid: 30916c37d65df4332b88990eac861d07, type: 2}
+  - {fileID: 11400000, guid: d42285a996b2f46e0a2096f33c9037fe, type: 2}
+  - {fileID: 11400000, guid: 3e9d0842a978a4884a8a3de840833306, type: 2}
+  - {fileID: 11400000, guid: bd0ed6107603548a0b8ca6f68930a061, type: 2}
+  - {fileID: 11400000, guid: a6cac636566e34473aa447a96332e05c, type: 2}
   type: 1

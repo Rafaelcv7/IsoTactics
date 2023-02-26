@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityRange: 1
   abilityIcon: {fileID: 21300000, guid: 363f8b98150f247b593b5710d27dfc94, type: 3}
+  character: {fileID: 0}

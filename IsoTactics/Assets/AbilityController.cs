@@ -24,7 +24,7 @@ public class AbilityController : MonoBehaviour
             var abilities = _buttons.Where(x => x.name.Contains("Ability")).ToList();
             for (var i = 0; i < abilities.Count; i++)
             {
-                if (_activeCharacter.abilities[i])
+                if (_activeCharacter.abilities.ElementAtOrDefault(i))
                 {
                     abilities[i].ability = _activeCharacter.abilities[i];
                     var abilityIcon = abilities[i].GetComponentsInChildren<Image>().First(x => x.name.Contains("Icon"));

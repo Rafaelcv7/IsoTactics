@@ -7,6 +7,7 @@ namespace IsoTactics.Abilities
     {
         public int abilityRange;
         public Sprite abilityIcon;
+        public BaseCharacter character;
         
         private readonly RangeFinder _rangeFinder = new ();
 

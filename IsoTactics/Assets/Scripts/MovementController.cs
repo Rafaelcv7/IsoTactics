@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static IsoTactics.ArrowTranslator;
 
 namespace IsoTactics
@@ -8,6 +9,8 @@ namespace IsoTactics
     public class MovementController : MonoBehaviour
     {
         public Character activeCharacter;
+        [Header("Events:")]
+        public GameEvents characterMoving;
         private PathFinder _pathFinder;
         private RangeFinder _rangeFinder;
         private ArrowTranslator _arrowTranslator;
@@ -31,7 +34,7 @@ namespace IsoTactics
         {
             if (!_isMovementEnabled) return; // Event Activated.
             
-            if (activeCharacter && activeCharacter.movementPoints != 0 && GamePhases.CurrentPhase.Equals("Turn") && _focusedTile)
+            if (activeCharacter && activeCharacter.Stats.movementPoints.statValue != 0 && GamePhases.CurrentPhase.Equals("Turn") && _focusedTile)
             {
                 GetInRangeTiles();
                 if (_inRangeTiles.Contains(_focusedTile) && !_isMoving)
@@ -53,14 +56,15 @@ namespace IsoTactics
                     }
                 }
                 
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && _inRangeTiles.Contains(_focusedTile))
                 {
                     _focusedTile.ShowTile();
                     _isMoving = true;
                     _focusedTile.HideTile();
+                    if (characterMoving) { characterMoving.Raise(this, true); }
                 } 
                 
-                if (_path?.Count > 0 && _isMoving && _inRangeTiles.Contains(_focusedTile))// && characterMovementPoints
+                if (_path?.Count > 0 && _isMoving)// && characterMovementPoints
                 {
                     _inRangeTiles.ForEach(x => x.HideTile());
                     _path.ForEach(x => x.SetSprite(ArrowDirection.None));
@@ -75,7 +79,7 @@ namespace IsoTactics
         
         private void MoveAlongPath()
         {
-            var step = activeCharacter.speed * Time.deltaTime;
+            var step = 3 * Time.deltaTime;
             
             activeCharacter.State.EvaluateMovingState(_path[0], _isMoving);
             
@@ -88,7 +92,7 @@ namespace IsoTactics
             {
                 PositionCharacterOnLine(_path[0]);
                 _path.RemoveAt(0);
-                activeCharacter.movementPoints--;
+                activeCharacter.Stats.movementPoints.statValue--;
             }
 
             if (_path.Count == 0)
@@ -96,6 +100,7 @@ namespace IsoTactics
                 _isMoving = false;
                 GetInRangeTiles();
                 activeCharacter.State.EvaluateMovingState(null, _isMoving);
+                if (characterMoving) { characterMoving.Raise(this, false); }
             }
         }
         private void PositionCharacterOnLine(OverlayTile tile)
@@ -109,7 +114,7 @@ namespace IsoTactics
         {
             _inRangeTiles = _rangeFinder.GetTilesInRange(
                 new Vector2Int(activeCharacter.activeTile.gridLocation.x, activeCharacter.activeTile.gridLocation.y),
-                activeCharacter.movementPoints);
+                activeCharacter.Stats.movementPoints.statValue);
 
             // foreach (var item in _inRangeTiles.Where(item => activeCharacter.movementPoints > 0))
             // {

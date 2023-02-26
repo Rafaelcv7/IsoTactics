@@ -46,7 +46,7 @@ namespace IsoTactics
         {
             _characterNum = charactersContainer.Count;
             _activeCharacter = charactersContainer[currentTurn];
-            _activeCharacter.RestartStats();
+            _activeCharacter.RestartPTStats();
             
             onNewActiveCharacter.Raise(this, _activeCharacter);
         }

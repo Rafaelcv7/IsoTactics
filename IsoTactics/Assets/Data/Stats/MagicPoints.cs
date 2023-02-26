@@ -10,7 +10,7 @@ namespace IsoTactics.Stats
 
         private void Start()
         {
-            maxMP = gameObject.GetComponent<Character>().wisdom /2;
+            maxMP = gameObject.GetComponent<BaseCharacter>().Stats.wisdom.baseStat /2;
             currentMP = maxMP;
         }
 
