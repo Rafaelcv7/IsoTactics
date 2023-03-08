@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IsoTactics.Abilities;
+using IsoTactics.Enums;
 using UnityEngine;
 
 namespace IsoTactics
@@ -12,14 +13,17 @@ namespace IsoTactics
         public Sprite portrait;
         [Header("Abilities:")]
         public List<Ability> abilities;
+        [Header("Configuration:")] 
+        public int teamId;
+        public bool isAi;
+        public Behaviours behaviour;
 
         private void Start()
         {
             if (characterClass) { SetStats(); }
             else 
             {
-                throw new Exception(
-                    "Character does not have a class assigned. Please assign a class to this character.");
+                throw new Exception("Character does not have a class assigned. Please assign a class to this character.");
             }
 
             List<Ability> abilitiesPouch = new ();

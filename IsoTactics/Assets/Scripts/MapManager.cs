@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IsoTactics.Enums;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using TileData = IsoTactics.TileConfig.TileData;
 
@@ -15,8 +16,8 @@ namespace IsoTactics
         public GameObject overlayContainer;
         public List<TileData> tileDatas;
         public Dictionary<TileBase, TileData> TexturesToType = new ();
-
         public Dictionary<Vector2Int, OverlayTile> Map;
+        Dictionary<string, bool> directions;
 
         private void Awake()
         {
@@ -73,75 +74,68 @@ namespace IsoTactics
         }
 
         //Currently only works with 1.
-        public List<OverlayTile> GetSurroundingTiles(Vector2Int originTile)
+        public List<OverlayTile> GetSurroundingTiles(OverlayTile originTile, List<OverlayTile> searchableTiles, bool ignoreObstacles = false, bool walkThroughAllies = false)
         {
-            var surroundingTiles = new List<OverlayTile>();
+            var tilesToSearch = new Dictionary<Vector2Int, OverlayTile>();
 
-            var tileToCheck = new Vector2Int(originTile.x + 1, originTile.y);
-            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
+            if (searchableTiles.Count > 0)
             {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
+                foreach (var tile in searchableTiles)
+                {
+                    tilesToSearch.Add(tile.Grid2DLocation, tile);
+                }
+            }
+            else
+            {
+                tilesToSearch = Map;
             }
 
-            tileToCheck = new Vector2Int(originTile.x - 1, originTile.y);
-            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
+            var neighbours = new List<OverlayTile>();
+            if (originTile != null)
             {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
+                //Right
+                var tileToCheck = new Vector2Int(originTile.Grid2DLocation.x +1, originTile.Grid2DLocation.y);
+                ValidateNeighbour(originTile, ignoreObstacles, walkThroughAllies, tilesToSearch, neighbours, tileToCheck);
+
+                //Left
+                tileToCheck = new Vector2Int(originTile.Grid2DLocation.x -1, originTile.Grid2DLocation.y);
+                ValidateNeighbour(originTile, ignoreObstacles, walkThroughAllies, tilesToSearch, neighbours, tileToCheck);
+
+                //Up
+                tileToCheck = new Vector2Int(originTile.Grid2DLocation.x, originTile.Grid2DLocation.y +1);
+                ValidateNeighbour(originTile, ignoreObstacles, walkThroughAllies, tilesToSearch, neighbours, tileToCheck);
+
+                //Down
+                tileToCheck = new Vector2Int(originTile.Grid2DLocation.x, originTile.Grid2DLocation.y -1);
+                ValidateNeighbour(originTile, ignoreObstacles, walkThroughAllies, tilesToSearch, neighbours, tileToCheck);
             }
 
-            tileToCheck = new Vector2Int(originTile.x, originTile.y + 1);
-            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
-            {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
-            }
-
-            tileToCheck = new Vector2Int(originTile.x, originTile.y - 1);
-            if (Map.ContainsKey(tileToCheck) && !Map[tileToCheck].isBlocked)
-            {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
-            }
-
-            return surroundingTiles;
+            return neighbours;
         }
         
         //TODO: REWORK
-        public List<OverlayTile> GetAttackTiles(Vector2Int originTile)
+        public List<OverlayTile> GetAttackTiles(OverlayTile originTile, OverlayTile characterActiveTile)
         {
-            var surroundingTiles = new List<OverlayTile>();
+            var neighbours = new List<OverlayTile>();
+            var tilesToSearch = Instance.Map;
 
-            var tileToCheck = new Vector2Int(originTile.x + 1, originTile.y);
-            if (Map.ContainsKey(tileToCheck))
-            {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
-            }
+            //Right
+            var tileToCheck = new Vector2Int(originTile.Grid2DLocation.x + 1, originTile.Grid2DLocation.y);
+            ValidateNeighbourAttack(originTile, tilesToSearch, neighbours, tileToCheck);
 
-            tileToCheck = new Vector2Int(originTile.x - 1, originTile.y);
-            if (Map.ContainsKey(tileToCheck))
-            {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
-            }
+            //Left
+            tileToCheck = new Vector2Int(originTile.Grid2DLocation.x - 1, originTile.Grid2DLocation.y);
+            ValidateNeighbourAttack(originTile, tilesToSearch, neighbours, tileToCheck);
 
-            tileToCheck = new Vector2Int(originTile.x, originTile.y + 1);
-            if (Map.ContainsKey(tileToCheck))
-            {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
-            }
+            //Up
+            tileToCheck = new Vector2Int(originTile.Grid2DLocation.x, originTile.Grid2DLocation.y + 1);
+            ValidateNeighbourAttack(originTile, tilesToSearch, neighbours, tileToCheck);
 
-            tileToCheck = new Vector2Int(originTile.x, originTile.y - 1);
-            if (Map.ContainsKey(tileToCheck))
-            {
-                if (Mathf.Abs(Map[tileToCheck].transform.position.z - Map[originTile].transform.position.z) <= 1)
-                    surroundingTiles.Add(Map[tileToCheck]);
-            }
+            //Down
+            tileToCheck = new Vector2Int(originTile.Grid2DLocation.x, originTile.Grid2DLocation.y - 1);
+            ValidateNeighbourAttack(originTile, tilesToSearch, neighbours, tileToCheck);
 
-            return surroundingTiles;
+            return neighbours;
         }
 
         private void MapTextureToType(List<TileData> tileDatas)
@@ -155,6 +149,28 @@ namespace IsoTactics
                         TexturesToType.Add(texture, tileData);
                     }
                 }
+            }
+        }
+
+        private void ValidateNeighbourAttack(OverlayTile currentOverlayTile, Dictionary<Vector2Int, OverlayTile> tilesToSearch, List<OverlayTile> neighbours, Vector2Int locationToCheck)
+        {
+            if (tilesToSearch.ContainsKey(locationToCheck))
+            {
+                if (Mathf.Abs(currentOverlayTile.gridLocation.z - tilesToSearch[locationToCheck].gridLocation.z) <= 2)
+                    neighbours.Add(tilesToSearch[locationToCheck]);
+            }
+        }
+        
+        private static void ValidateNeighbour(OverlayTile currentOverlayTile, bool ignoreObstacles, bool walkThroughAllies, Dictionary<Vector2Int, OverlayTile> tilesToSearch, List<OverlayTile> neighbours, Vector2Int locationToCheck)
+        {
+            if (tilesToSearch.ContainsKey(locationToCheck) &&
+                (ignoreObstacles ||
+                 (!tilesToSearch[locationToCheck].isBlocked) ||
+                 (walkThroughAllies &&
+                  (tilesToSearch[locationToCheck].activeCharacter))))
+            {
+                if (Mathf.Abs(currentOverlayTile.gridLocation.z - tilesToSearch[locationToCheck].gridLocation.z) <= 1)
+                    neighbours.Add(tilesToSearch[locationToCheck]);
             }
         }
 

@@ -15,6 +15,7 @@ namespace IsoTactics.Stats
         public int currentHealth;
         public AudioClip hurtFX;
         public GameEvents onDamageReceived;
+        public GameEvents onHealingReceived;
         public GameEvents onDeath;
         private BaseCharacter _character;
 
@@ -51,10 +52,9 @@ namespace IsoTactics.Stats
         public void Heal(int healAmount)
         {
             currentHealth += healAmount;
-            if (currentHealth > maxHealth)
-            {
+            if (currentHealth > maxHealth) 
                 currentHealth = maxHealth;
-            }
+            
         }
 
         private void Die()

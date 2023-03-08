@@ -12,6 +12,7 @@ namespace IsoTactics
     public abstract class BaseCharacter : MonoBehaviour
     {
         public OverlayTile activeTile;
+        public bool isAlive;
         public StateManager State => gameObject.GetComponent<StateManager>();
 
         [Header("Stats:")]

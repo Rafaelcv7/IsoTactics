@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7091c243ff4090855595ee7a324bbc, type: 3}
+  m_Name: KnightStats
+  m_EditorClassIdentifier: 
+  strength:
+    statKey: 0
+    baseStat: 0
+    statValue: 0
+  vitality:
+    statKey: 1
+    baseStat: 0
+    statValue: 0
+  accuracy:
+    statKey: 2
+    baseStat: 0
+    statValue: 0
+  agility:
+    statKey: 3
+    baseStat: 0
+    statValue: 0
+  intelligence:
+    statKey: 4
+    baseStat: 0
+    statValue: 0
+  wisdom:
+    statKey: 5
+    baseStat: 0
+    statValue: 0
+  resistance:
+    statKey: 6
+    baseStat: 0
+    statValue: 0
+  actionPoints:
+    statKey: 7
+    baseStat: 0
+    statValue: 0
+  movementPoints:
+    statKey: 8
+    baseStat: 0
+    statValue: 0

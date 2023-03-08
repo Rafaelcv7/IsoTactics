@@ -38,7 +38,7 @@ public class HUDController : MonoBehaviour
     public void ShowHudInfo(Component sender, object data)
     {
         if(!GamePhases.CurrentPhase.Equals("Turn")) return;
-        if (data is Character activeCharacter)
+        if (data is Character activeCharacter && activeCharacter.teamId == 1)
         {
             _character = activeCharacter;
             gameObject.SetActive(true);

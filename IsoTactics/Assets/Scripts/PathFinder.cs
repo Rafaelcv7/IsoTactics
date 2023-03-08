@@ -8,24 +8,10 @@ namespace IsoTactics
     {
         private Dictionary<Vector2Int, OverlayTile> searchableTiles;
 
-        public List<OverlayTile> FindPath(OverlayTile start, OverlayTile end, List<OverlayTile> inRangeTiles)
+        public List<OverlayTile> FindPath(OverlayTile start, OverlayTile end, List<OverlayTile> tilesToSearch, bool ignoreObstacles = false, bool walkTroughAllies = false)
         {
-            searchableTiles = new Dictionary<Vector2Int, OverlayTile>();
-
             var openList = new List<OverlayTile>();
             var closedList = new HashSet<OverlayTile>();
-
-            if (inRangeTiles.Count > 0)
-            {
-                foreach (var item in inRangeTiles)
-                {
-                    searchableTiles.Add(item.Grid2DLocation, MapManager.Instance.Map[item.Grid2DLocation]);
-                }
-            }
-            else
-            {
-                searchableTiles = MapManager.Instance.Map;
-            }
 
             openList.Add(start);
 
@@ -41,9 +27,11 @@ namespace IsoTactics
                     return GetFinishedList(start, end);
                 }
 
-                foreach (var tile in GetNeightbourOverlayTiles(currentOverlayTile))
+                var neighbourTiles = MapManager.Instance.GetSurroundingTiles(currentOverlayTile, tilesToSearch, ignoreObstacles, walkTroughAllies);
+
+                foreach (var tile in neighbourTiles)
                 {
-                    if (tile.isBlocked || closedList.Contains(tile) || Mathf.Abs(currentOverlayTile.transform.position.z - tile.transform.position.z) > 1)
+                    if (closedList.Contains(tile))
                     {
                         continue;
                     }
@@ -80,64 +68,10 @@ namespace IsoTactics
             return finishedList;
         }
 
-        private int GetManhattenDistance(OverlayTile start, OverlayTile tile)
+        public int GetManhattenDistance(OverlayTile start, OverlayTile tile)
         {
             return Mathf.Abs(start.gridLocation.x - tile.gridLocation.x) + Mathf.Abs(start.gridLocation.y - tile.gridLocation.y);
         }
 
-        private List<OverlayTile> GetNeightbourOverlayTiles(OverlayTile currentOverlayTile)
-        {
-            var map = MapManager.Instance.Map;
-
-            var neighbours = new List<OverlayTile>();
-
-            //right
-            var locationToCheck = new Vector2Int(
-                currentOverlayTile.gridLocation.x + 1,
-                currentOverlayTile.gridLocation.y
-            );
-
-            if (searchableTiles.ContainsKey(locationToCheck))
-            {
-                neighbours.Add(searchableTiles[locationToCheck]);
-            }
-
-            //left
-            locationToCheck = new Vector2Int(
-                currentOverlayTile.gridLocation.x - 1,
-                currentOverlayTile.gridLocation.y
-            );
-
-            if (searchableTiles.ContainsKey(locationToCheck))
-            {
-                neighbours.Add(searchableTiles[locationToCheck]);
-            }
-
-            //top
-            locationToCheck = new Vector2Int(
-                currentOverlayTile.gridLocation.x,
-                currentOverlayTile.gridLocation.y + 1
-            );
-
-            if (searchableTiles.ContainsKey(locationToCheck))
-            {
-                neighbours.Add(searchableTiles[locationToCheck]);
-            }
-
-            //bottom
-            locationToCheck = new Vector2Int(
-                currentOverlayTile.gridLocation.x,
-                currentOverlayTile.gridLocation.y - 1
-            );
-
-            if (searchableTiles.ContainsKey(locationToCheck))
-            {
-                neighbours.Add(searchableTiles[locationToCheck]);
-            }
-
-            return neighbours;
-        }
-
-      
     }
 }

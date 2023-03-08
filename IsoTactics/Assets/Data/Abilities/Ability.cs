@@ -8,6 +8,8 @@ namespace IsoTactics.Abilities
         public int abilityRange;
         public Sprite abilityIcon;
         public BaseCharacter character;
+        public int cost;
+        public int cooldown;
         
         private readonly RangeFinder _rangeFinder = new ();
 
@@ -16,7 +18,7 @@ namespace IsoTactics.Abilities
         public List<OverlayTile> GetAbilityRange(BaseCharacter character)
         {
             return _rangeFinder.GetTilesInAbilityRange(
-                new Vector2Int(character.activeTile.Grid2DLocation.x, character.activeTile.Grid2DLocation.y),
+                character,
                 abilityRange
             );
         }

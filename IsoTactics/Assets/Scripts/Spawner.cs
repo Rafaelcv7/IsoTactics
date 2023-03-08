@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using IsoTactics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Spawner : MonoBehaviour
 {
-    public List<Character> charactersPrefabs;
-    
+    public List<CharacterPrefabsContainer> charactersPrefabs;
+    public List<CharacterPrefabsContainer> enemyPrefabs;
+
     [Header("Events")]
     public GameEvents onCharacterSpawn;
 
@@ -16,24 +20,32 @@ public class Spawner : MonoBehaviour
     private OverlayTile _focusedTile;
 
     private GameObject _cursor;
-    
+
+    private List<CharacterPrefabsContainer> _charactersList;
+
+    private void Start()
+    {
+        _charactersList = charactersPrefabs.Concat(enemyPrefabs).ToList();
+    }
 
     private void Update()
     {
-        if (charactersPrefabs.Count > 0 && _focusedTile)
+        if (_charactersList.Count > 0 && _focusedTile)
         {
-            SetCursorSilhouette.Raise(this, charactersPrefabs[0].GetComponent<SpriteRenderer>().sprite);
+            SetCursorSilhouette.Raise(this, _charactersList[0].characterPrefab.GetComponent<SpriteRenderer>().sprite);
             
             if (Input.GetMouseButtonDown(0))
             {
                 if (!_focusedTile.isBlocked)
                 {
-                    var newCharacter = Instantiate(charactersPrefabs[0]).GetComponent<Character>();
-                    charactersPrefabs.RemoveAt(0);
+                    var newCharacter = Instantiate(_charactersList[0].characterPrefab).GetComponent<Character>();
+                    newCharacter.isAi = _charactersList[0].isAi;
+                    newCharacter.teamId = _charactersList[0].teamId;
+                    _charactersList.RemoveAt(0);
                 
                     SpawnCharacter(newCharacter, _focusedTile);
                 
-                    if (charactersPrefabs.Count == 0)
+                    if (_charactersList.Count == 0)
                     {
                         SetCursorSilhouette.Raise(this, null);
                         if(ChangePhase)
@@ -51,6 +63,7 @@ public class Spawner : MonoBehaviour
 
     private void SpawnCharacter(Character newCharacter, OverlayTile tile)
     {
+        newCharacter.isAlive = true;
         newCharacter.transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
         newCharacter.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
         newCharacter.LinkCharacterToTile(tile);
@@ -64,4 +77,5 @@ public class Spawner : MonoBehaviour
             _focusedTile = tile;
         }
     }
+    
 }

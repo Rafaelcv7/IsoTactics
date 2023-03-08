@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7091c243ff4090855595ee7a324bbc, type: 3}
+  m_Name: RangerStats
+  m_EditorClassIdentifier: 
+  strength:
+    statKey: 0
+    baseStat: 10
+    statValue: 10
+  vitality:
+    statKey: 1
+    baseStat: 8
+    statValue: 8
+  accuracy:
+    statKey: 2
+    baseStat: 10
+    statValue: 10
+  agility:
+    statKey: 3
+    baseStat: 10
+    statValue: 10
+  intelligence:
+    statKey: 4
+    baseStat: 3
+    statValue: 3
+  wisdom:
+    statKey: 5
+    baseStat: 3
+    statValue: 3
+  resistance:
+    statKey: 6
+    baseStat: 6
+    statValue: 6
+  actionPoints:
+    statKey: 7
+    baseStat: 1
+    statValue: 0
+  movementPoints:
+    statKey: 8
+    baseStat: 5
+    statValue: 3

@@ -8,9 +8,9 @@ namespace IsoTactics
 {
     public class OverlayTile : MonoBehaviour
     {
-        public int G;
-        public int H;
-        public int F => G + H;
+        public int G; //Distance from starting node.
+        public int H; //Distance From end node.
+        public int F => G + H; //Cost
         public Character activeCharacter;
         public bool isBlocked = false;
 

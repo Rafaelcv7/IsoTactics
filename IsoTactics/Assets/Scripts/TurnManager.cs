@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace IsoTactics
@@ -10,12 +11,14 @@ namespace IsoTactics
         
         private Character _activeCharacter;
         private int _characterNum;
+        private AiController _aiController;
 
         [Header("Events")] public GameEvents onNewActiveCharacter;
         private void Start()
         {
             currentTurn = 0;
             charactersContainer = new List<Character>();
+            _aiController = GameObject.Find("AiController").GetComponent<AiController>();
             EvaluatePhase();
         }
 
@@ -47,8 +50,11 @@ namespace IsoTactics
             _characterNum = charactersContainer.Count;
             _activeCharacter = charactersContainer[currentTurn];
             _activeCharacter.RestartPTStats();
-            
-            onNewActiveCharacter.Raise(this, _activeCharacter);
+            onNewActiveCharacter.Raise(this, _activeCharacter); 
+            if (_activeCharacter.isAi)
+            {
+                _aiController.ExecuteTurn(_activeCharacter);
+            }
         }
 
         //Called by MovementController.
@@ -63,7 +69,7 @@ namespace IsoTactics
         {
             if (data is string phase)
             {
-                GamePhases.ChangeCurrentPhase(phase);  
+                GamePhases.ChangeCurrentPhase(phase);
                 EvaluatePhase();
             }
         }
@@ -74,6 +80,7 @@ namespace IsoTactics
             if (data is Character newCharacter)
             {
                 charactersContainer.Add(newCharacter);
+                charactersContainer = charactersContainer.OrderByDescending(x => x.Stats.agility.statValue).ToList();
             }
         }
         
@@ -82,6 +89,7 @@ namespace IsoTactics
         {
             if (data is Character deathCharacter)
             {
+                deathCharacter.isAlive = false;
                 charactersContainer.Remove(deathCharacter);
                 _characterNum = charactersContainer.Count;
                 currentTurn = (currentTurn + 1) % _characterNum;

@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 6105360262830321314}
   m_Layer: 0
   m_Name: Knight
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -105,6 +105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeTile: {fileID: 0}
+  isAlive: 0
   characterClass: {fileID: 11400000, guid: c5974ea5d9c02440f82dc32e2166bc53, type: 2}
   HP: {fileID: 6332197960730945496}
   MP: {fileID: -7843739857682842293}
@@ -113,8 +114,11 @@ MonoBehaviour:
   portrait: {fileID: 966663200, guid: a290a49d9e0f94855af2581adfbb6e23, type: 3}
   abilities:
   - {fileID: 11400000, guid: 313cc3ffcc2d84e6e8575ad6f4e58d98, type: 2}
-  - {fileID: 11400000, guid: 313cc3ffcc2d84e6e8575ad6f4e58d98, type: 2}
+  - {fileID: 11400000, guid: 50dc883a3fe954f9caa3015fbd7bb146, type: 2}
   - {fileID: 0}
+  teamId: 0
+  isAi: 0
+  behaviour: 0
 --- !u!114 &-5228691538624328199
 MonoBehaviour:
   m_ObjectHideFlags: 0

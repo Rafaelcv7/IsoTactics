@@ -22,7 +22,7 @@ namespace IsoTactics
 
                 foreach (var item in tilesForPreviousStep)
                 {
-                    surroundingTiles.AddRange(MapManager.Instance.GetSurroundingTiles(new Vector2Int(item.gridLocation.x, item.gridLocation.y)));
+                    surroundingTiles.AddRange(MapManager.Instance.GetSurroundingTiles(item, new List<OverlayTile>()));
                 }
 
                 inRangeTiles.AddRange(surroundingTiles);
@@ -34,9 +34,9 @@ namespace IsoTactics
         }
         
         //TODO: REWORK
-        public List<OverlayTile> GetTilesInAbilityRange(Vector2Int location, int abilityRange)
+        public List<OverlayTile> GetTilesInAbilityRange(BaseCharacter character, int abilityRange)
         {
-            var startingTile = MapManager.Instance.Map[location];
+            var startingTile = MapManager.Instance.Map[character.activeTile.Grid2DLocation];
             var inRangeTiles = new List<OverlayTile>();
             int stepCount = 0;
 
@@ -50,7 +50,7 @@ namespace IsoTactics
 
                 foreach (var item in tilesForPreviousStep)
                 {
-                    surroundingTiles.AddRange(MapManager.Instance.GetAttackTiles(new Vector2Int(item.gridLocation.x, item.gridLocation.y)));
+                    surroundingTiles.AddRange(MapManager.Instance.GetAttackTiles(item, character.activeTile));
                 }
 
                 inRangeTiles.AddRange(surroundingTiles);

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using IsoTactics.Enums;
+using IsoTactics.Stats;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
@@ -11,6 +12,6 @@ namespace IsoTactics.TileConfig
     {
         public List<TileBase> tilesTextures;
         public TileTypes type = TileTypes.Traversable;
-        // public Effect effect;
+        public ScriptableEffect effect;
     }
 }

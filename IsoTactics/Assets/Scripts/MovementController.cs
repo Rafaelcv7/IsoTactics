@@ -18,6 +18,7 @@ namespace IsoTactics
         private List<OverlayTile> _inRangeTiles;
         private bool _isMoving;
         private bool _isMovementEnabled = true;
+        private bool _Ai;
 
         private OverlayTile _focusedTile;
 
@@ -34,7 +35,7 @@ namespace IsoTactics
         {
             if (!_isMovementEnabled) return; // Event Activated.
             
-            if (activeCharacter && activeCharacter.Stats.movementPoints.statValue != 0 && GamePhases.CurrentPhase.Equals("Turn") && _focusedTile)
+            if (activeCharacter && !activeCharacter.isAi && activeCharacter.Stats.movementPoints.statValue != 0 && GamePhases.CurrentPhase.Equals("Turn") && _focusedTile && !_Ai)
             {
                 GetInRangeTiles();
                 if (_inRangeTiles.Contains(_focusedTile) && !_isMoving)
@@ -62,18 +63,13 @@ namespace IsoTactics
                     _isMoving = true;
                     _focusedTile.HideTile();
                     if (characterMoving) { characterMoving.Raise(this, true); }
-                } 
-                
-                if (_path?.Count > 0 && _isMoving)// && characterMovementPoints
-                {
-                    _inRangeTiles.ForEach(x => x.HideTile());
-                    _path.ForEach(x => x.SetSprite(ArrowDirection.None));
-                    MoveAlongPath();
                 }
-                else
-                {
-                    _isMoving = false;
-                }
+            }
+            if (_path?.Count > 0 && _isMoving)// && characterMovementPoints
+            {
+                // _inRangeTiles?.ForEach(x => x.HideTile());
+                _path.ForEach(x => x.SetSprite(ArrowDirection.None));
+                MoveAlongPath();
             }
         }
         
@@ -98,6 +94,7 @@ namespace IsoTactics
             if (_path.Count == 0)
             {
                 _isMoving = false;
+                _Ai = false;
                 GetInRangeTiles();
                 activeCharacter.State.EvaluateMovingState(null, _isMoving);
                 if (characterMoving) { characterMoving.Raise(this, false); }
@@ -113,7 +110,7 @@ namespace IsoTactics
         private void GetInRangeTiles()
         {
             _inRangeTiles = _rangeFinder.GetTilesInRange(
-                new Vector2Int(activeCharacter.activeTile.gridLocation.x, activeCharacter.activeTile.gridLocation.y),
+                activeCharacter.activeTile.Grid2DLocation,
                 activeCharacter.Stats.movementPoints.statValue);
 
             // foreach (var item in _inRangeTiles.Where(item => activeCharacter.movementPoints > 0))
@@ -137,7 +134,7 @@ namespace IsoTactics
             {
                 _focusedTile = tile;
             }
-            else
+            else if(!_Ai)
             {
                 CancelMovement();
             }
@@ -150,6 +147,20 @@ namespace IsoTactics
             if (data is Character newCharacter)
             {
                 activeCharacter = newCharacter;
+            }
+        }
+
+        public void MoveAiCommand(Component sender, object data)
+        {
+            if (data is List<OverlayTile> pathToFollow)
+            {
+                if (activeCharacter)
+                {
+                    _isMoving = true;
+                    _Ai = true;
+                    if (pathToFollow.Count > 0)
+                        _path = pathToFollow;
+                }
             }
         }
 
